@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Auth;
 
 class HotelsController extends Controller
 {
-    public function __construct() { 
+    public function __construct() {
         $this->middleware('auth',
             ['except' => ['show','index']]
-        ); 
+        );
     }
 
     /**
@@ -38,7 +38,7 @@ class HotelsController extends Controller
         return view('hotels.index')
             ->with('hotels', $hotels)
             ->with('attractions', $sites);
-        
+
     }
 
     public function images($id =null)
@@ -48,10 +48,10 @@ class HotelsController extends Controller
         if (Auth::user()->role=='hotel_manager') {
             /**
              * the user is redirected to upload images for the hotels
-             * 
+             *
              * this is if the user is an hotel manager
              */
-            
+
             $hotel = Hotel::where('id', $id)->where('user_id', Auth::user()->id)
             ->first();
             // return $hotel;
@@ -60,27 +60,27 @@ class HotelsController extends Controller
                 ->with('hotel', $hotel);
             }
             return view('pages.not_found');
-            
+
             // return 'hotel_manager';
         }else {
             return view('pages.not_found');
-            
+
         }
-        
+
     }
     public function img_store(Request $request)
     {
         //
-        
+
         $this->validate($request,[
-            'image'=>'image|max:2000'
+            // 'image'=>'image|max:2000'
         ]);
         // return $request;
-        
+
 
         if($request->hasFile('image')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('image')->	
+            $filenamewithext=$request-> 	file('image')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -107,7 +107,7 @@ class HotelsController extends Controller
         $hotel_img = Image::where('img_type', $img->img_type)
             ->where('type_id', $img->type_id)
             ->get();
-        
+
         if (count($hotel_img)>3) {
 
             $hotel=Hotel::where('user_id', Auth::user()->id)
@@ -116,16 +116,16 @@ class HotelsController extends Controller
             $hotel->status = 'rooms';
             $hotel->save();
                 return redirect()->route('hotels.show', ['hotel'=>$hotel->id, 'images'=>$hotel_img]);
-                    
+
         }else {
 
-            
+
             $hotel=Hotel::where('user_id', Auth::user()->id)
                 ->where('id', $img->type_id)
                 ->first();
             return redirect()->route('images.hotel',['id'=>$img->type_id]);
             // return redirect()->route('hotels.image')
-            
+
             //      ->with('hotel', $hotel);
 
         }
@@ -148,20 +148,20 @@ class HotelsController extends Controller
         }else {
             return back();
         }
-        
+
     }
 
     public function store_room(Request $request)
     {
         //
-        
+
         $this->validate($request,[
-            'image'=>'image|max:1999'
+            // 'image'=>'image|max:1999'
         ]);
 
         if($request->hasFile('image')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('image')->	
+            $filenamewithext=$request-> 	file('image')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -190,7 +190,7 @@ class HotelsController extends Controller
 
         $room->save();
 
-       
+
 
         $hotel = Hotel::where('id', $room->hotel_id)
             ->where('user_id', Auth::user()->id)
@@ -213,12 +213,12 @@ class HotelsController extends Controller
         // return $sites;
         if (Auth::user()) {
             return view('hotels.create')
-                ->with('sites', $sites);        
+                ->with('sites', $sites);
         }else{
             return back();
         }
-     
-        
+
+
     }
 
     /**
@@ -230,17 +230,11 @@ class HotelsController extends Controller
     public function store(Request $request)
     {
         //
-        $this->validate($request,[
-            'cover_1'=>'image|max:1999',
-            'cover_2'=>'image|max:1999',
-            'cover_3'=>'image|max:1999',
-            'about_image'=>'image|max:1999'
 
-        ]);
 
         if($request->hasFile('cover_1')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_1')->	
+            $filenamewithext=$request-> 	file('cover_1')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -258,7 +252,7 @@ class HotelsController extends Controller
         //return $fileNameToStore1;
         if($request->hasFile('cover_2')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_2')->	
+            $filenamewithext=$request-> 	file('cover_2')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -277,7 +271,7 @@ class HotelsController extends Controller
 
         if($request->hasFile('cover_3')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_3')->	
+            $filenamewithext=$request-> 	file('cover_3')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -294,7 +288,7 @@ class HotelsController extends Controller
 
         if($request->hasFile('about_image')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('about_image')->	
+            $filenamewithext=$request-> 	file('about_image')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -404,17 +398,17 @@ class HotelsController extends Controller
     {
         if ($id) {
             $hotel = Hotel::where('id', $id)->first();
-            
+
             if ($hotel) {
                 return view('hotels.about')
-                ->with('hotel', $hotel); 
+                ->with('hotel', $hotel);
             }
             return view('pages.not_found');
-           
+
         }else {
             return back();
         }
-        
+
 
     }
 
@@ -423,17 +417,17 @@ class HotelsController extends Controller
     {
         if ($id) {
             $hotel = Hotel::where('id', $id)->first();
-            
+
             if ($hotel) {
                 return view('hotels.contact')
-                ->with('hotel', $hotel); 
+                ->with('hotel', $hotel);
             }
             return view('pages.not_found');
-           
+
         }else {
             return back();
         }
-        
+
 
     }
 
@@ -445,19 +439,19 @@ class HotelsController extends Controller
 
             $news = Notice::where('status', 'ready')->get();
 
-            
-            
+
+
             if ($hotel) {
                 return view('hotels.news')
                 ->with('news', $news)
-                ->with('hotel', $hotel); 
+                ->with('hotel', $hotel);
             }
             return view('pages.not_found');
-           
+
         }else {
             return back();
         }
-        
+
 
     }
 
@@ -467,7 +461,7 @@ class HotelsController extends Controller
         /**
          * one day = 86,400 seconds
          * 1/2 day = 43,200 seconds
-         * 
+         *
          */
         list($start, $stop)=explode('-', $request->input('checkin'));
 
@@ -487,7 +481,7 @@ $reservations=Bookhotel::where('hotel_id',$request->hotel_id)->where(function($q
     //lower comparison
     $query->where('check_in','<=',$today)
           ->where('check_out','>',$today);
-         
+
 })->orWhere(function($query) use($tomorrow){
     //higher comparison
     $query->where('check_in','<=',$tomorrow)
@@ -500,7 +494,7 @@ $reservations=Bookhotel::where('hotel_id',$request->hotel_id)->where(function($q
           ->where('check_out','<',$tomorrow);
 
 })->get();
- 
+
 // return $reservations;
 
 $rooms=Room::all();
@@ -511,25 +505,25 @@ $rooms=Room::all();
 
 //this loop removes the rooms which appear twice in the reservations array
 
-//  
+//
 foreach($reservations as $reservation){
     foreach($rooms as $room){
 
        if ($room->id == $reservation->room_id) {
            $a=$room->id;
-         
-      
+
+
          //it creates a new array called rooms which in which every room appear
            $rooms=$rooms->filter(function($value,$key) use($a){
                return $value->id != $a;
-              
+
 
            });
-           
+
        }
 
     }
-    
+
 }
 
 
@@ -552,7 +546,7 @@ foreach($reservations as $reservation){
             ->with('check', $chk)
             ->with('rooms', $rooms)
             ->with('hotel', $hotel);
-           
+
     }
 
     public function pay(Request $request){
@@ -565,7 +559,7 @@ foreach($reservations as $reservation){
 
         $checkin = strtotime($start)+43200;
 
-       
+
         $checkout = strtotime($stop)+43200;
 
         if ($checkin==$checkout) {
@@ -588,7 +582,7 @@ foreach($reservations as $reservation){
             'room_no'=>$request->input('room_no'),
             'checkin'=>date('D d M, Y',$checkin),
             'checkout'=>date('D d M, Y',$checkout)
-            
+
         ];
 
         return view('hotels.pay')
@@ -596,7 +590,7 @@ foreach($reservations as $reservation){
             ->with('hotel', $hotel)
             ->with('room', $room);
 
-        
+
     }
 
     public function book(Request $request){
@@ -606,7 +600,7 @@ foreach($reservations as $reservation){
 
         $checkin = strtotime($start)+43200;
 
-       
+
         $checkout = strtotime($stop)+43200;
 
         if ($checkin==$checkout) {
@@ -627,10 +621,10 @@ foreach($reservations as $reservation){
             'room_no'=>$request->input('room_no'),
             'checkin'=>date('D d M, Y',$checkin),
             'checkout'=>date('D d M, Y',$checkout),
-            
-            
+
+
         ];
-        
+
         $expiry=$request->input('expiry_date');
         if (strtotime($expiry)<time()) {
           return $expiry;
@@ -660,7 +654,7 @@ foreach($reservations as $reservation){
         return redirect()->route('home');
         //return $booking;
 
-        
+
     }
 
     public function message(Request $request)

@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 class SitesController extends Controller
 {
-    public function __construct() { 
-        $this->middleware('auth',['except' => ['show','index']]); 
+    public function __construct() {
+        $this->middleware('auth',['except' => ['show','index']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +33,7 @@ class SitesController extends Controller
         return view('sites.index')
             ->with('hotels', $hotels)
             ->with('attractions', $sites);
-            
+
     }
 
 
@@ -54,7 +54,7 @@ class SitesController extends Controller
         return view('sites.create')
             ->with('site', $site)
             ->with('hotels', $hotels);
-        
+
     }
 
     /**
@@ -71,7 +71,7 @@ class SitesController extends Controller
 
         if($request->hasFile('cover_1')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_1')->	
+            $filenamewithext=$request-> 	file('cover_1')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -89,7 +89,7 @@ class SitesController extends Controller
         //return $fileNameToStore1;
         if($request->hasFile('cover_2')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_2')->	
+            $filenamewithext=$request-> 	file('cover_2')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -108,7 +108,7 @@ class SitesController extends Controller
 
         if($request->hasFile('cover_3')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('cover_3')->	
+            $filenamewithext=$request-> 	file('cover_3')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -127,7 +127,7 @@ class SitesController extends Controller
 
         if($request->hasFile('overview_image')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('overview_image')->	
+            $filenamewithext=$request-> 	file('overview_image')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -167,7 +167,7 @@ class SitesController extends Controller
         $site->cover_3=$fileNameToStore3;
 
         $site->save();
-        
+
         return redirect()->route('home');
     }
 
@@ -211,7 +211,7 @@ class SitesController extends Controller
             ->with('images', $site_img)
             ->with('hotels', $hotels)
             ->with('site', $site);
-       
+
     }
 
     /**
@@ -254,7 +254,7 @@ class SitesController extends Controller
         if (Auth::user()->role=='site_manager') {
             /**
              * the user is redirected to upload images for the sites
-             * 
+             *
              * this is if he is a site manager
              */
 
@@ -279,16 +279,16 @@ class SitesController extends Controller
     {
         //
         // return $request;
-        
+
         $this->validate($request,[
-            'image'=>'image|max:2000'
+            // 'image'=>'image|max:2000'
         ]);
         // return $request;
-        
+
 
         if($request->hasFile('image')){
             //get filename adn extension
-            $filenamewithext=$request-> 	file('image')->	
+            $filenamewithext=$request-> 	file('image')->
             getClientOriginalName();
             //get just filename
             $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
@@ -315,7 +315,7 @@ class SitesController extends Controller
         $site_img = Image::where('img_type', $img->img_type)
             ->where('type_id', $img->type_id)
             ->get();
-        
+
         if (count($site_img)>2) {
 
             $site=Site::where('user_id', Auth::user()->id)
@@ -324,15 +324,15 @@ class SitesController extends Controller
             $site->status = 'ready';
             $site->save();
                 return redirect()->route('sites.show', ['site'=>$site->id, 'images'=>$site_img]);
-                    
+
         }else {
 
-            
+
             $site=Site::where('user_id', Auth::user()->id)
                 ->where('id', $img->type_id)
                 ->first();
             return redirect()->route('images.site',['id'=>$img->type_id]);
-            
+
 
         }
         return back();
@@ -377,12 +377,12 @@ class SitesController extends Controller
         $site = Site::where('user_id',Auth::user()->id)
             ->where('id', $id)
             ->first();
-    
+
         if (!$site) {
-            
+
             return redirect()->route('sites.create');
         }
-        
+
         return view('sites.create_rates')->with('site', $site);
     }
 
@@ -412,9 +412,9 @@ class SitesController extends Controller
           }else {
             return redirect()->route('home');
         }
-           
+
     }
 
 
-   
+
 }

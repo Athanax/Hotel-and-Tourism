@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Siteimage;
 use App\Site;
 use App\Image;
+use App\Siteimage;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,14 +30,14 @@ class SiteimagesController extends Controller
     {
         //
         $site=Site::where('id', Auth::user()->id)->first();
-        
+
         if (!$site) {
             return view('home');
         }else {
             $images=Siteimage::where('site_id', $site->id)->get();
             return view('siteimages.create')->with('images', $images)->with('site',$site);
         }
-        
+
     }
 
     /**
@@ -49,16 +49,16 @@ class SiteimagesController extends Controller
     public function store(Request $request)
     {
         //
-        
+        return "kmdkajdj";
         $this->validate($request, [
             'images' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        
+
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image) {
                  //get filename adn extension
-                $filenamewithext=$image->getClientOriginalName();	
+                $filenamewithext=$image->getClientOriginalName();
                 //get just filename
                 $filename=pathinfo($filenamewithext, 	PATHINFO_FILENAME);
                 //get just extension
@@ -79,11 +79,11 @@ class SiteimagesController extends Controller
                 $gal->url=$site_image;
                 $gal->save();
 
-                
+
             }
-            
+
         }
-        
+
         $site = Site::where('id', $gal->site_id)->first();
         //return $site;
         $site->status='ready';
